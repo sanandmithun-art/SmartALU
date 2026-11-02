@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; style-src 'self'; script-src 'self';">
+    <title>SmartALU - 8 Bit Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">S</div>
+        <div>
+            <h2>SmartALU</h2>
+            <p>Interactive ALU Simulator</p>
+        </div>
+    </div>
+    <div class="system-status">
+        <span class="status-dot"></span> SYSTEM READY
+    </div>
+</header>
+
+<nav class="navigation">
+    <button class="nav-button active" data-page="simulator">ALU Simulator</button>
+    <button class="nav-button" data-page="converter">Number Converter</button>
+    <button class="nav-button" data-page="learning">Learning Centre</button>
+</nav>
+
+<main class="container">
+
+<!-- SIMULATOR PAGE -->
+
+<section class="page active" id="simulator">
+
+    <section class="welcome">
+        <p class="eyebrow">COMPUTER ORGANIZATION & ARCHITECTURE</p>
+        <h1>Arithmetic Logic Unit</h1>
+        <p>Explore arithmetic and logical operations through an interactive 8-bit ALU.</p>
+    </section>
+
+    <section class="workspace">
+
+        <div class="panel">
+            <h3>Input Operands</h3>
+
+            <label for="inputA">OPERAND A (8-BIT)</label>
+            <input id="inputA" maxlength="8" value="00000101" autocomplete="off">
+
+            <label for="inputB">OPERAND B (8-BIT)</label>
+            <input id="inputB" maxlength="8" value="00000011" autocomplete="off">
+
+            <button id="resetButton" class="reset-button">RESET INPUTS</button>
+        </div>
+
+        <div class="panel operations-panel">
+            <h3>ALU Operations</h3>
+
+            <p class="category-title">ARITHMETIC</p>
+            <div class="operation-grid">
+                <button class="operation-button" data-op="ADD">ADD</button>
+                <button class="operation-button" data-op="SUB">SUB</button>
+                <button class="operation-button" data-op="INC">INC</button>
+                <button class="operation-button" data-op="DEC">DEC</button>
+            </div>
+
+            <p class="category-title">LOGICAL</p>
+            <div class="operation-grid">
+                <button class="operation-button" data-op="AND">AND</button>
+                <button class="operation-button" data-op="OR">OR</button>
+                <button class="operation-button" data-op="NOT">NOT</button>
+                <button class="operation-button" data-op="XOR">XOR</button>
+                <button class="operation-button" data-op="NAND">NAND</button>
+                <button class="operation-button" data-op="NOR">NOR</button>
+                <button class="operation-button" data-op="XNOR">XNOR</button>
+            </div>
+
+            <p class="category-title">SHIFT</p>
+            <div class="operation-grid">
+                <button class="operation-button" data-op="SHL">SHIFT LEFT</button>
+                <button class="operation-button" data-op="SHR">SHIFT RIGHT</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Output Result</h3>
+
+            <div class="result-placeholder">
+                <p>SELECTED OPERATION</p>
+                <h3 id="operationName">NONE</h3>
+
+                <p>BINARY RESULT</p>
+                <h2 id="result">00000000</h2>
+
+                <p>DECIMAL RESULT (UNSIGNED)</p>
+                <h2 id="decimalResult">0</h2>
+
+                <p id="message">Select an ALU operation to begin.</p>
+            </div>
+
+            <h3 class="flags-heading">CPU STATUS FLAGS</h3>
+
+            <div class="flags-grid">
+                <div class="flag"><span>CF</span><strong id="carryFlag">0</strong></div>
+                <div class="flag"><span>ZF</span><strong id="zeroFlag">0</strong></div>
+                <div class="flag"><span>SF</span><strong id="signFlag">0</strong></div>
+                <div class="flag"><span>OF</span><strong id="overflowFlag">0</strong></div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="panel explanation-panel">
+        <h3>Operation Explanation</h3>
+        <p id="explanation">Your selected ALU operation will be explained here.</p>
+    </section>
+
+    <section class="panel history-panel">
+        <div class="history-header">
+            <h3>Operation History</h3>
+            <button id="clearHistory" class="reset-button">CLEAR HISTORY</button>
+        </div>
+
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Operand A</th>
+                        <th>Operand B</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="historyList"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel architecture-panel">
+        <h3>ALU Architecture Visualization</h3>
+        <p class="architecture-subtitle">Visual representation of the 8-bit ALU data flow.</p>
+
+        <div class="architecture-flow">
+
+            <div class="architecture-inputs">
+                <div class="architecture-block">
+                    <span>OPERAND A</span>
+                    <strong id="archA">00000101</strong>
+                </div>
+                <div class="architecture-block">
+                    <span>OPERAND B</span>
+                    <strong id="archB">00000011</strong>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="architecture-alu">
+                <h2>8-BIT ALU</h2>
+                <p id="archOperation">WAITING FOR OPERATION</p>
+                <span>ARITHMETIC | LOGIC | SHIFT</span>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="architecture-output">
+                <span>RESULT OUTPUT</span>
+                <strong id="archResult">00000000</strong>
+            </div>
+
+            <div class="architecture-flags">
+                <span>CPU FLAGS</span>
+                <strong id="archFlags">CF: 0 | ZF: 0 | SF: 0 | OF: 0</strong>
+            </div>
+        </div>
+    </section>
+
+</section>
+
+<!-- NUMBER CONVERTER PAGE -->
+
+<section class="page" id="converter">
+
+    <div class="welcome">
+        <p class="eyebrow">NUMBER SYSTEMS</p>
+        <h1>Number System Converter</h1>
+        <p>Convert between binary, decimal and hexadecimal number systems.</p>
+    </div>
+
+    <div class="panel converter-panel">
+
+        <h3>Enter a Number</h3>
+
+        <label for="numberInput">INPUT VALUE</label>
+        <input id="numberInput" type="text" placeholder="Enter a number">
+
+        <label for="numberBase">SELECT INPUT NUMBER SYSTEM</label>
+        <select id="numberBase">
+            <option value="2">Binary (Base 2)</option>
+            <option value="10" selected>Decimal (Base 10)</option>
+            <option value="16">Hexadecimal (Base 16)</option>
+        </select>
+
+        <button id="convertButton" class="primary-button">CONVERT NUMBER</button>
+
+        <div id="conversionError" class="error-message"></div>
+
+        <div class="conversion-results">
+
+            <div class="conversion-card">
+                <span>BINARY</span>
+                <strong id="binaryOutput">--------</strong>
+                <button class="copy-button" data-copy="binaryOutput">COPY</button>
+            </div>
+
+            <div class="conversion-card">
+                <span>DECIMAL</span>
+                <strong id="decimalOutput">--------</strong>
+                <button class="copy-button" data-copy="decimalOutput">COPY</button>
+            </div>
+
+            <div class="conversion-card">
+                <span>HEXADECIMAL</span>
+                <strong id="hexOutput">--------</strong>
+                <button class="copy-button" data-copy="hexOutput">COPY</button>
+            </div>
+
+        </div>
+
+        <p class="converter-note">
+            Supported range: 0–255 (unsigned 8-bit values).
+        </p>
+
+    </div>
+
+</section>
+
+<!-- LEARNING CENTRE PAGE -->
+
+<section class="page" id="learning">
+
+    <div class="welcome">
+        <p class="eyebrow">LEARN COMPUTER ARCHITECTURE</p>
+        <h1>ALU Learning Centre</h1>
+        <p>Understand how every ALU operation works with examples and truth tables.</p>
+    </div>
+
+    <div class="learning-layout">
+
+        <div class="panel learning-menu">
+            <h3>Choose an Operation</h3>
+
+            <p class="category-title">ARITHMETIC</p>
+            <button class="learn-button active" data-learn="ADD">Addition (ADD)</button>
+            <button class="learn-button" data-learn="SUB">Subtraction (SUB)</button>
+            <button class="learn-button" data-learn="INC">Increment (INC)</button>
+            <button class="learn-button" data-learn="DEC">Decrement (DEC)</button>
+            <button class="learn-button" data-learn="FULLADDER">Full Adder</button>
+
+            <p class="category-title">LOGICAL</p>
+            <button class="learn-button" data-learn="AND">AND</button>
+            <button class="learn-button" data-learn="OR">OR</button>
+            <button class="learn-button" data-learn="NOT">NOT</button>
+            <button class="learn-button" data-learn="XOR">XOR</button>
+            <button class="learn-button" data-learn="NAND">NAND</button>
+            <button class="learn-button" data-learn="NOR">NOR</button>
+            <button class="learn-button" data-learn="XNOR">XNOR</button>
+
+            <p class="category-title">SHIFT</p>
+            <button class="learn-button" data-learn="SHL">Shift Left</button>
+            <button class="learn-button" data-learn="SHR">Shift Right</button>
+        </div>
+
+        <div class="panel lesson-content">
+
+            <span class="lesson-category" id="lessonCategory">ARITHMETIC OPERATION</span>
+
+            <h2 id="lessonTitle">Addition (ADD)</h2>
+
+            <p id="lessonDescription">
+                Addition adds two binary operands and produces an 8-bit result.
+            </p>
+
+            <div class="lesson-section">
+                <h3>How It Works</h3>
+                <p id="lessonWorking"></p>
+            </div>
+
+            <div class="lesson-section">
+                <h3>Example</h3>
+                <div class="example-box" id="lessonExample"></div>
+            </div>
+
+            <div class="lesson-section">
+                <h3>Truth Table</h3>
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead id="truthHead"></thead>
+                        <tbody id="truthBody"></tbody>
+                    </table>
+                </div>
+                <p class="table-note" id="truthNote"></p>
+            </div>
+
+            <button id="tryLessonButton" class="primary-button">
+                TRY THIS OPERATION IN SIMULATOR
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    SmartALU © 2026 | Interactive 8-Bit ALU Simulator
+</footer>
+
+</main>
+
+<script src="renderer.js"></script>
+</body>
+</html>
